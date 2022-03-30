@@ -1,0 +1,104 @@
+body{
+    margin: 0;
+    width: 250px;
+    height: 220px;
+    background-color: rgba(0, 0, 0, 0.925);
+}
+
+.DisabledSection{
+    display: none;
+}
+
+#NetflixSessionLogo{
+    width: 65%;
+    margin-left: 17.5%;
+    margin-right: 17.5%;
+    margin-top: 3%;
+}
+
+
+/* Join or Create Lobby Section */
+.NetflixSessionBtnSection{
+    display: flex;
+    flex-direction: column;
+    margin: 10% auto;
+    width: 100%;
+}
+
+#create_netflix_lobby{
+    margin-bottom: 5%;
+}
+
+.NetflixSessionJoinerBtn{
+    font-size:large;
+    color: white;
+    font-weight: 600;
+    background-color: transparent;
+    border: 0;
+}
+
+.NetflixSessionJoinerBtn:hover{
+    color: rgb(216, 216, 216);
+    cursor: pointer;
+}
+
+/* Join Section */
+#JoinIdNetflix{
+    background-color: rgba(0, 0, 0, 0.925);
+    border-style: solid;
+    border-color: white;
+    color: white;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.TypeInPassCodeSection{
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+}
+
+/* Session Information Section */
+.NetflixSessionPassCodeText{
+    color: white;
+    font-size: x-large;
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+#LeaveSessionNetflix{
+    margin-top: 0;
+    margin-left: 20%;
+    margin-right: 20%;
+    margin-bottom: 10%;
+    background-color: transparent;
+    border: 0;
+    color: white;
+    font-size: 18px;
+    text-align: center;
+    width: 60%;
+}
+
+#LeaveSessionNetflix:hover{
+    color: rgb(216, 216, 216);
+    cursor: pointer;
+}
+
+/* Control buttons */
+.NetflixControlBtn{
+    font-size: large;
+    padding: 3% 0;
+    width: 40%;
+    border: 0;
+    background-color: #E50914;
+    color: rgb(216, 216, 216);
+    margin: 0 1%;
+    font-weight: 500;
+}
+
+.NetflixControlBtn:hover{
+    color: white;
+    background-color: rgb(241, 24, 35);
+    cursor: pointer;
+}
