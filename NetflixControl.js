@@ -1,5 +1,5 @@
 chrome.runtime.onMessage.addListener(function (requset, sender, sendResponse){
-    
+    // Name - Syncnic / Nicsync
     if(requset == "check" ){
         if(localStorage.getItem('IsHost') == null)
             sendResponse(`false`);
