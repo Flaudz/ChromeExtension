@@ -10,7 +10,7 @@ chrome.runtime.onMessage.addListener(function (requset, sender, sendResponse){
 
     if(requset == "leave"){
         if(localStorage.getItem('IsHost') == "true"){
-            fetch(`https://netflixdata.nico936d.aspitcloud.dk/api/remove/remove.php?passCode=${localStorage.getItem('videoPassCode')}`)
+            fetch(`https://syncnic.nico936d.aspitcloud.dk/api/remove/remove.php?passCode=${localStorage.getItem('videoPassCode')}`)
             .then((result) =>{return result.text();})
             .then((content) =>{
             })
@@ -34,7 +34,7 @@ chrome.runtime.onMessage.addListener(function (requset, sender, sendResponse){
         string = string.replace("post", ""); 
         localStorage.setItem('videoPassCode',string); // Saves passcode to lobby
         localStorage.setItem('IsHost', true);
-        fetch(`https://netflixdata.nico936d.aspitcloud.dk/api/write/PostSession.php?MovieUrl=${window.location.href}&TimeStamp=0&Paused=1&PassCode=${string}`)
+        fetch(`https://syncnic.nico936d.aspitcloud.dk/api/write/PostSession.php?MovieUrl=${window.location.href}&TimeStamp=0&Paused=1&PassCode=${string}`)
         .then((result) =>{return result.text();})
         .then((content) =>{
         })
@@ -42,7 +42,7 @@ chrome.runtime.onMessage.addListener(function (requset, sender, sendResponse){
     else if(string.includes("join")){
         string = string.replace("join", "");
         if(string.length != 0){
-            fetch(`https://netflixdata.nico936d.aspitcloud.dk/api/post/read.php?passCode=${string}`)
+            fetch(`https://syncnic.nico936d.aspitcloud.dk/api/post/read.php?passCode=${string}`)
             .then((result) =>{return result.text();})
             .then((content) =>{
                 if(!content.includes("No Posts Found")){

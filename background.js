@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function (){
         id += Math.floor(Math.random() * 10).toString();
         id += Math.floor(Math.random() * 10).toString();
         id += Math.floor(Math.random() * 10).toString();
-        fetch(`https://netflixdata.nico936d.aspitcloud.dk/api/post/read.php?passCode=${id}`)
+        fetch(`https://syncnic.nico936d.aspitcloud.dk/api/post/read.php?passCode=${id}`)
         .then((result) =>{return result.text();})
         .then((content) =>{
             if(content.includes("No Posts Found")){
@@ -63,7 +63,7 @@ function JoinLobby(){
     const id = document.getElementById("JoinIdNetflix").value;
     if(id != ""){
 
-        fetch(`https://netflixdata.nico936d.aspitcloud.dk/api/post/read.php?passCode=${id}`)
+        fetch(`https://syncnic.nico936d.aspitcloud.dk/api/post/read.php?passCode=${id}`)
         .then((result) =>{return result.text();})
         .then((content) =>{
             if(!content.includes("No Posts Found")){
