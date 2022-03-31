@@ -59,13 +59,11 @@ chrome.runtime.onMessage.addListener(function (requset, sender, sendResponse){
     } // Joins a session
 });
 
+
 const d = new Date();
 setTimeout(function (){
     setInterval(function(){
-        if(localStorage.getItem('IsHost') == "false" && localStorage.getItem('IsHost') != null  && window.location.href.includes("netflix.com")){
-            ControlGuest();
-        }
-        else if(localStorage.getItem('IsHost') == "true" && window.location.href.includes("netflix.com")){
+        if(localStorage.getItem('IsHost') != null  && window.location.href.includes("netflix.com") || window.location.href.includes("hbomax.com")){
             let videoPlayer = document.querySelector('video');
             if(videoPlayer != null){
                 videoPlayer.addEventListener('seeked', () =>{
@@ -75,13 +73,14 @@ setTimeout(function (){
             }
             ControlGuest();
         }
+        
     
     },100);
 }, 1000-d.getMilliseconds());
 
 
 function ControlGuest(){
-    fetch(`https://netflixdata.nico936d.aspitcloud.dk/api/post/read.php?passCode=${localStorage.getItem('videoPassCode')}`)
+    fetch(`https://syncnic.nico936d.aspitcloud.dk/api/post/read.php?passCode=${localStorage.getItem('videoPassCode')}`)
     .then((result) =>{return result.text();})
     .then((content) =>{
         content = JSON.parse(content);
@@ -90,13 +89,15 @@ function ControlGuest(){
         if(videoPlayer != null){
             if(content.data[0].paused == 1){
                 videoPlayer.pause();
+                if(!window.location.href.includes("netflix.com"))
+                    videoPlayer.currentTime = content.data[0].timeStamp;
             }
             else{
                 videoPlayer.play();
             }
-            
-            if(videoPlayer.paused && Number(content.data[0].timeStamp)+.09 < videoPlayer.currentTime || Number(content.data[0].timeStamp)-.1 > videoPlayer.currentTime){
-                console.log(Number(content.data[0].timeStamp)+0.1);
+            if(!window.location.href.includes("netflix.com"))
+                return;
+            if(videoPlayer.paused && Number(content.data[0].timeStamp)+.15 < videoPlayer.currentTime || Number(content.data[0].timeStamp)-.15 > videoPlayer.currentTime){
                 let url = content.data[0].movieUrl;
                     url = url.replace('/', '');
                     url = url.replace('https:/', '');
@@ -106,7 +107,7 @@ function ControlGuest(){
         }
     })
 }
-                
+
 function UpdatePause(paused){
     if(paused == 1){
         const videoPlayer = document.querySelector('video');
@@ -114,14 +115,14 @@ function UpdatePause(paused){
             UpdateTimeStamp(videoPlayer.currentTime);
         }
     }
-    fetch(`https://netflixdata.nico936d.aspitcloud.dk/api/update/update.php?passCode=${localStorage.getItem('videoPassCode')}&paused=${paused}`)
+    fetch(`https://syncnic.nico936d.aspitcloud.dk/api/update/update.php?passCode=${localStorage.getItem('videoPassCode')}&paused=${paused}`)
     .then((result) =>{return result.text();})
     .then((content) =>{
     })
 }
 
 function UpdateTimeStamp(timeStamp){
-    fetch(`https://netflixdata.nico936d.aspitcloud.dk/api/update/update.php?passCode=${localStorage.getItem('videoPassCode')}&timeStamp=${timeStamp}`)
+    fetch(`https://syncnic.nico936d.aspitcloud.dk/api/update/update.php?passCode=${localStorage.getItem('videoPassCode')}&timeStamp=${timeStamp}`)
     .then((result) =>{return result.text();})
     .then((content) =>{
     })

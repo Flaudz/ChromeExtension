@@ -17,7 +17,7 @@
                 "<all_urls>"
             ],
             "js": [
-                "NetflixControl.js"
+                "SyncnicControl.js"
             ],
             "run_at": "document_end"
         }
