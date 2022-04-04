@@ -62,10 +62,12 @@ chrome.runtime.onMessage.addListener(function (requset, sender, sendResponse){
 const d = new Date();
 setTimeout(function (){
     setInterval(function(){
-        if(localStorage.getItem('IsHost') == "false" && localStorage.getItem('IsHost') != null  && window.location.href.includes("netflix.com")){
-            ControlGuest();
+        if(localStorage.getItem('IsHost') == "false" && localStorage.getItem('IsHost') != null){
+            if(window.location.href.includes('netflix.com')){
+                ControlGuestNetflix();
+            }
         }
-        else if(localStorage.getItem('IsHost') == "true" && window.location.href.includes("netflix.com")){
+        else if(localStorage.getItem('IsHost') == "true"){
             let videoPlayer = document.querySelector('video');
             if(videoPlayer != null){
                 videoPlayer.addEventListener('seeked', () =>{
@@ -73,14 +75,20 @@ setTimeout(function (){
                     UpdatePause(1);
                 })
             }
-            ControlGuest();
+            
+            // Check site to call controll
+            if(window.location.href.includes('netflix.com')){
+                ControlGuestNetflix();
+            }
         }
     
     },100);
 }, 1000-d.getMilliseconds());
 
 
-function ControlGuest(){
+
+// Netflix
+function ControlGuestNetflix(){
     fetch(`https://syncnic.nico936d.aspitcloud.dk/api/post/read.php?passCode=${localStorage.getItem('videoPassCode')}`)
     .then((result) =>{return result.text();})
     .then((content) =>{
@@ -98,16 +106,17 @@ function ControlGuest(){
             if(videoPlayer.paused && Number(content.data[0].timeStamp)+.09 < videoPlayer.currentTime || Number(content.data[0].timeStamp)-.1 > videoPlayer.currentTime){
                 console.log(Number(content.data[0].timeStamp)+0.1);
                 let url = content.data[0].movieUrl;
-                    url = url.replace('/', '');
-                    url = url.replace('https:/', '');
-                    window.location.assign(`https://${url}&t=${Number(content.data[0].timeStamp)-0.03}`);
+                url = url.replace('/', '');
+                url = url.replace('https:/', '');
+                window.location.assign(`https://${url}&t=${Number(content.data[0].timeStamp)-0.03}`);
             }
-
         }
     })
 }
-                
+
+// Update information
 function UpdatePause(paused){
+    console.log(paused);
     if(paused == 1){
         const videoPlayer = document.querySelector('video');
         if(videoPlayer != null){
