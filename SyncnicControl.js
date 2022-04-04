@@ -59,21 +59,22 @@ chrome.runtime.onMessage.addListener(function (requset, sender, sendResponse){
     } // Joins a session
 });
 
-
 const d = new Date();
 setTimeout(function (){
     setInterval(function(){
-        if(localStorage.getItem('IsHost') != null  && window.location.href.includes("netflix.com") || window.location.href.includes("hbomax.com")){
+        if(localStorage.getItem('IsHost') == "false" && localStorage.getItem('IsHost') != null  && window.location.href.includes("netflix.com")){
+            ControlGuest();
+        }
+        else if(localStorage.getItem('IsHost') == "true" && window.location.href.includes("netflix.com")){
             let videoPlayer = document.querySelector('video');
             if(videoPlayer != null){
                 videoPlayer.addEventListener('seeked', () =>{
-                    UpdatePause(1);
                     UpdateTimeStamp(videoPlayer.currentTime);
+                    UpdatePause(1);
                 })
             }
             ControlGuest();
         }
-        
     
     },100);
 }, 1000-d.getMilliseconds());
@@ -89,15 +90,13 @@ function ControlGuest(){
         if(videoPlayer != null){
             if(content.data[0].paused == 1){
                 videoPlayer.pause();
-                if(!window.location.href.includes("netflix.com"))
-                    videoPlayer.currentTime = content.data[0].timeStamp;
             }
             else{
                 videoPlayer.play();
             }
-            if(!window.location.href.includes("netflix.com"))
-                return;
-            if(videoPlayer.paused && Number(content.data[0].timeStamp)+.15 < videoPlayer.currentTime || Number(content.data[0].timeStamp)-.15 > videoPlayer.currentTime){
+            
+            if(videoPlayer.paused && Number(content.data[0].timeStamp)+.09 < videoPlayer.currentTime || Number(content.data[0].timeStamp)-.1 > videoPlayer.currentTime){
+                console.log(Number(content.data[0].timeStamp)+0.1);
                 let url = content.data[0].movieUrl;
                     url = url.replace('/', '');
                     url = url.replace('https:/', '');
@@ -107,7 +106,7 @@ function ControlGuest(){
         }
     })
 }
-
+                
 function UpdatePause(paused){
     if(paused == 1){
         const videoPlayer = document.querySelector('video');
@@ -127,4 +126,3 @@ function UpdateTimeStamp(timeStamp){
     .then((content) =>{
     })
 }
-
