@@ -104,10 +104,12 @@ function ControlGuestNetflix(){
         if(videoPlayer != null ){
             let pauseDate;
             if(!hadPaused){
-                videoPlayer.pause();
-                hadPaused = true;
+                setTimeout(() => {
+                    videoPlayer.pause();
+                    hadPaused = true;
+                }, 800);
             }
-            if(content.data[0].date != null){
+            if(content.data[0].date != null && hadPaused){
 
                 pauseDate = new Date(Date.parse(content.data[0].date.replace(/[-]/g, '/')));
                 if(content.data[0].paused == 1){
