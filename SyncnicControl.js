@@ -119,7 +119,6 @@ function ControlGuestNetflix(){
                             videoPlayer.pause();
                         }, timeBeforePlay*1000);
                     }
-                    
                 }
                 else{
                     if(new Date() < pauseDate){
