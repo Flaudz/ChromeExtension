@@ -1,3 +1,4 @@
+// Komentar
 let hadPaused = false;
 chrome.runtime.onMessage.addListener(function (requset, sender, sendResponse){
     // Name - Syncnic / Nicsync
@@ -102,7 +103,7 @@ function ControlGuestNetflix(){
         const videoPlayer = document.querySelector('video');
         if(videoPlayer != null ){
             let pauseDate;
-            if(!hadPaused){
+            if(!hadPaused && content.data[0].date == null){
                 videoPlayer.pause();
                 hadPaused = true;
             }
