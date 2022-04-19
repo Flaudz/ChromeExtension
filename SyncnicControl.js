@@ -103,7 +103,7 @@ function ControlGuestNetflix(){
         const videoPlayer = document.querySelector('video');
         if(videoPlayer != null ){
             let pauseDate;
-            if(!hadPaused && content.data[0].date == null){
+            if(!hadPaused){
                 videoPlayer.pause();
                 hadPaused = true;
             }
@@ -130,7 +130,7 @@ function ControlGuestNetflix(){
                 }
             }
             
-            if(videoPlayer.paused && Number(content.data[0].timeStamp)+2 < videoPlayer.currentTime || Number(content.data[0].timeStamp)-2 > videoPlayer.currentTime){
+            if(videoPlayer.paused && Number(content.data[0].timeStamp)+1 < videoPlayer.currentTime || Number(content.data[0].timeStamp)-1 > videoPlayer.currentTime){
                 let url = content.data[0].movieUrl;
                 url = url.replace('/', '');
                 url = url.replace('https:/', '');
