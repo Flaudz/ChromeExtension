@@ -1,4 +1,4 @@
-
+let hadPaused = false;
 chrome.runtime.onMessage.addListener(function (requset, sender, sendResponse){
     // Name - Syncnic / Nicsync
     if(requset == "check" ){
@@ -105,20 +105,29 @@ function ControlGuestNetflix(){
 
                 pauseDate = new Date(Date.parse(content.data[0].date.replace(/[-]/g, '/')));
                 if(content.data[0].paused == 1){
-                    videoPlayer.pause();
+                    if(new Date() < pauseDate && hadPaused){
+                        const timeBeforePlay = Math.abs((pauseDate.getTime() - new Date().getTime()) / 1000);
+                        setTimeout(function(){
+                            console.log(timeBeforePlay*1000);
+                            videoPlayer.pause();
+                        }, timeBeforePlay*1000);
+                    }
+                    else{
+                        videoPlayer.pause();
+                        hadPaused = true;
+                    }
                 }
                 else{
                     if(new Date() < pauseDate){
                         const timeBeforePlay = Math.abs((pauseDate.getTime() - new Date().getTime()) / 1000);
                         setTimeout(function(){
                             videoPlayer.play();
-                        }, timeBeforePlay);
+                        }, timeBeforePlay*1000);
                     }
-                    
                 }
             }
             
-            if(videoPlayer.paused && Number(content.data[0].timeStamp)+.09 < videoPlayer.currentTime || Number(content.data[0].timeStamp)-.1 > videoPlayer.currentTime){
+            if(videoPlayer.paused && Number(content.data[0].timeStamp)+2 < videoPlayer.currentTime || Number(content.data[0].timeStamp)-2 > videoPlayer.currentTime){
                 let url = content.data[0].movieUrl;
                 url = url.replace('/', '');
                 url = url.replace('https:/', '');
@@ -150,11 +159,11 @@ function ControlGuestViaplay(){
 // Update information
 function UpdatePause(paused){
     const videoPlayer = document.querySelector('video');
-    const timePlus = 1;
     if(paused == 1 && videoPlayer != null && window.location.href.includes("netflix.com")){
         UpdateTimeStamp(videoPlayer.currentTime);
     }
-        
+    
+    const timePlus = 2;
     let d = new Date();
     d.setSeconds(d.getSeconds() + timePlus); // Adds the extra time before fire
     d.setHours(d.getHours() +2);
