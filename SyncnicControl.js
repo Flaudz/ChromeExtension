@@ -2,8 +2,9 @@ let hadPaused = false;
 chrome.runtime.onMessage.addListener(function (requset, sender, sendResponse){
     // Name - Syncnic / Nicsync
     if(requset == "check" ){
-        if(localStorage.getItem('IsHost') == null)
+        if(localStorage.getItem('IsHost') == null){
             sendResponse(`false`);
+        }
             else 
             sendResponse(`true${localStorage.getItem('videoPassCode')}`);
         return;
@@ -101,6 +102,10 @@ function ControlGuestNetflix(){
         const videoPlayer = document.querySelector('video');
         if(videoPlayer != null ){
             let pauseDate;
+            if(!hadPaused){
+                videoPlayer.pause();
+                hadPaused = true;
+            }
             if(content.data[0].date != null){
 
                 pauseDate = new Date(Date.parse(content.data[0].date.replace(/[-]/g, '/')));
@@ -112,10 +117,7 @@ function ControlGuestNetflix(){
                             videoPlayer.pause();
                         }, timeBeforePlay*1000);
                     }
-                    else{
-                        videoPlayer.pause();
-                        hadPaused = true;
-                    }
+                    
                 }
                 else{
                     if(new Date() < pauseDate){
@@ -182,3 +184,18 @@ function UpdateTimeStamp(timeStamp){
     .then((content) =>{
     })
 }
+
+
+// Check the login
+setTimeout(() => {
+    if(localStorage.getItem('IsHost') != null){
+        fetch(`https://syncnic.nico936d.aspitcloud.dk/api/post/read.php?passCode=${localStorage.getItem('videoPassCode')}`)
+        .then((result) =>{return result.text();})
+        .then((content) =>{
+            if(content.includes('No Posts Found')){
+                localStorage.removeItem('IsHost');
+                localStorage.removeItem('videoPassCode');
+            }
+        })
+    }
+}, 1000);
