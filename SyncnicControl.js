@@ -1,4 +1,3 @@
-// Komentar
 let hadPaused = false;
 chrome.runtime.onMessage.addListener(function (requset, sender, sendResponse){
     // Name - Syncnic / Nicsync
@@ -107,9 +106,9 @@ function ControlGuestNetflix(){
                 setTimeout(() => {
                     videoPlayer.pause();
                     hadPaused = true;
-                }, 800);
+                }, 1000);
             }
-            if(content.data[0].date != null && hadPaused){
+            if(content.data[0].date != null){
 
                 pauseDate = new Date(Date.parse(content.data[0].date.replace(/[-]/g, '/')));
                 if(content.data[0].paused == 1){
@@ -132,7 +131,7 @@ function ControlGuestNetflix(){
                 }
             }
             
-            if(videoPlayer.paused && Number(content.data[0].timeStamp)+1 < videoPlayer.currentTime || Number(content.data[0].timeStamp)-1 > videoPlayer.currentTime){
+            if(videoPlayer.paused && Number(content.data[0].timeStamp)+2 < videoPlayer.currentTime || Number(content.data[0].timeStamp)-2 > videoPlayer.currentTime){
                 let url = content.data[0].movieUrl;
                 url = url.replace('/', '');
                 url = url.replace('https:/', '');
