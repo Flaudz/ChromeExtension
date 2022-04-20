@@ -109,16 +109,17 @@ function ControlGuestNetflix(){
                 }, 1000);
             }
             if(content.data[0].date != null){
-
                 pauseDate = new Date(Date.parse(content.data[0].date.replace(/[-]/g, '/')));
+
                 if(content.data[0].paused == 1){
-                    if(new Date() < pauseDate && hadPaused){
-                        const timeBeforePlay = Math.abs((pauseDate.getTime() - new Date().getTime()) / 1000);
-                        setTimeout(function(){
-                            console.log(timeBeforePlay*1000);
+                    
+                    if(content.data[0].timeToPause > videoPlayer.currentTime){
+                        let pauseTime = (content.data[0].timeToPause - videoPlayer.currentTime) * 1000;
+                        setTimeout(() => {
                             videoPlayer.pause();
-                        }, timeBeforePlay*1000);
+                        }, pauseTime);
                     }
+
                 }
                 else{
                     if(new Date() < pauseDate){
@@ -130,7 +131,7 @@ function ControlGuestNetflix(){
                 }
             }
             
-            if(videoPlayer.paused && Number(content.data[0].timeStamp)+2 < videoPlayer.currentTime || Number(content.data[0].timeStamp)-2 > videoPlayer.currentTime){
+            if(videoPlayer.paused && Number(content.data[0].timeStamp)+5 < videoPlayer.currentTime || Number(content.data[0].timeStamp)-5 > videoPlayer.currentTime){
                 let url = content.data[0].movieUrl;
                 url = url.replace('/', '');
                 url = url.replace('https:/', '');
@@ -163,7 +164,12 @@ function ControlGuestViaplay(){
 function UpdatePause(paused){
     const videoPlayer = document.querySelector('video');
     if(paused == 1 && videoPlayer != null && window.location.href.includes("netflix.com")){
-        UpdateTimeStamp(videoPlayer.currentTime);
+        UpdateTimeStamp(videoPlayer.currentTime+4);
+        const pauseTime = videoPlayer.currentTime+4;
+        fetch(`https://syncnic.nico936d.aspitcloud.dk/api/update/update.php?passCode=${localStorage.getItem('videoPassCode')}&pauseTime=${pauseTime}`)
+        .then((result) =>{return result.text();})
+        .then((content) =>{
+        })
     }
     
     const timePlus = 2;
@@ -179,6 +185,7 @@ function UpdatePause(paused){
     
 }
 
+// Updates the timestamp the video is on
 function UpdateTimeStamp(timeStamp){
     fetch(`https://syncnic.nico936d.aspitcloud.dk/api/update/update.php?passCode=${localStorage.getItem('videoPassCode')}&timeStamp=${timeStamp}`)
     .then((result) =>{return result.text();})
@@ -187,7 +194,10 @@ function UpdateTimeStamp(timeStamp){
 }
 
 
-// Check the login
+/*
+    Checks the login.
+    If the session does not exist in the database, it will deletes the session information from the browser.
+*/
 setTimeout(() => {
     if(localStorage.getItem('IsHost') != null){
         fetch(`https://syncnic.nico936d.aspitcloud.dk/api/post/read.php?passCode=${localStorage.getItem('videoPassCode')}`)
