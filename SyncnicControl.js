@@ -36,7 +36,7 @@ chrome.runtime.onMessage.addListener(function (requset, sender, sendResponse){
         string = string.replace("post", ""); 
         localStorage.setItem('videoPassCode',string); // Saves passcode to lobby
         localStorage.setItem('IsHost', true);
-        fetch(`https://syncnic.nico936d.aspitcloud.dk/api/write/PostSession.php?MovieUrl=${window.location.href}&TimeStamp=0&Paused=1&PassCode=${string}`)
+        fetch(`https://syncnic.nico936d.aspitcloud.dk/api/write/PostSession.php?MovieUrl=${window.location.href}&TimeStamp=0&Paused=1&pauseTime=0.5&PassCode=${string}`)
         .then((result) =>{return result.text();})
         .then((content) =>{
         })
@@ -70,9 +70,10 @@ setTimeout(function (){
                 
                 if(window.location.href.includes("netflix.com")){
 
-                    videoPlayer.addEventListener('seeked', () =>{
-                        UpdateTimeStamp(videoPlayer.currentTime);
+                    videoPlayer.addEventListener('seeked', e =>{
                         UpdatePause(1);
+                        UpdatePauseTime(videoPlayer.currentTime+0.5);
+                        UpdateTimeStamp(videoPlayer.currentTime);
                     })
                 }
             }
@@ -102,12 +103,17 @@ function ControlGuestNetflix(){
         const videoPlayer = document.querySelector('video');
         if(videoPlayer != null ){
             let pauseDate;
+
             if(!hadPaused){
-                setTimeout(() => {
-                    videoPlayer.pause();
-                    hadPaused = true;
-                }, 1000);
+                if(content.data[0].timeToPause > videoPlayer.currentTime){
+                    let pauseTime = (content.data[0].timeToPause - videoPlayer.currentTime) * 1000;
+                    setTimeout(() => {
+                        videoPlayer.pause();
+                        hadPaused = true;
+                    }, pauseTime);
+                }
             }
+
             if(content.data[0].date != null){
                 pauseDate = new Date(Date.parse(content.data[0].date.replace(/[-]/g, '/')));
 
@@ -135,7 +141,10 @@ function ControlGuestNetflix(){
                 let url = content.data[0].movieUrl;
                 url = url.replace('/', '');
                 url = url.replace('https:/', '');
-                window.location.assign(`https://${url}&t=${Number(content.data[0].timeStamp)-0.03}`);
+                setTimeout(() => {
+                    window.location.assign(`https://${url}&t=${Number(content.data[0].timeStamp)-0.03}`);
+                    
+                }, 200);
             }
         }
     })
@@ -188,6 +197,13 @@ function UpdatePause(paused){
 // Updates the timestamp the video is on
 function UpdateTimeStamp(timeStamp){
     fetch(`https://syncnic.nico936d.aspitcloud.dk/api/update/update.php?passCode=${localStorage.getItem('videoPassCode')}&timeStamp=${timeStamp}`)
+    .then((result) =>{return result.text();})
+    .then((content) =>{
+    })
+}
+
+function UpdatePauseTime(pauseTime){
+    fetch(`https://syncnic.nico936d.aspitcloud.dk/api/update/update.php?passCode=${localStorage.getItem('videoPassCode')}&pauseTime=${pauseTime}`)
     .then((result) =>{return result.text();})
     .then((content) =>{
     })
