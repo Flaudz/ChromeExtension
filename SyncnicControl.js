@@ -72,7 +72,7 @@ setTimeout(function (){
 
                     videoPlayer.addEventListener('seeked', e =>{
                         UpdatePause(1);
-                        UpdatePauseTime(videoPlayer.currentTime+0.5);
+                        UpdatePauseTime(videoPlayer.currentTime+1);
                         UpdateTimeStamp(videoPlayer.currentTime);
                     })
                 }
@@ -173,8 +173,8 @@ function ControlGuestViaplay(){
 function UpdatePause(paused){
     const videoPlayer = document.querySelector('video');
     if(paused == 1 && videoPlayer != null && window.location.href.includes("netflix.com")){
-        UpdateTimeStamp(videoPlayer.currentTime+4);
-        const pauseTime = videoPlayer.currentTime+4;
+        UpdateTimeStamp(videoPlayer.currentTime+1);
+        const pauseTime = videoPlayer.currentTime+1;
         fetch(`https://syncnic.nico936d.aspitcloud.dk/api/update/update.php?passCode=${localStorage.getItem('videoPassCode')}&pauseTime=${pauseTime}`)
         .then((result) =>{return result.text();})
         .then((content) =>{
