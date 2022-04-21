@@ -1,4 +1,7 @@
+// Fields
 let hadPaused = false;
+const pausePlusTime = 3;
+
 chrome.runtime.onMessage.addListener(function (requset, sender, sendResponse){
     // Name - Syncnic / Nicsync
     if(requset == "check" ){
@@ -36,7 +39,7 @@ chrome.runtime.onMessage.addListener(function (requset, sender, sendResponse){
         string = string.replace("post", ""); 
         localStorage.setItem('videoPassCode',string); // Saves passcode to lobby
         localStorage.setItem('IsHost', true);
-        fetch(`https://syncnic.nico936d.aspitcloud.dk/api/write/PostSession.php?MovieUrl=${window.location.href}&TimeStamp=0&Paused=1&pauseTime=0.5&PassCode=${string}`)
+        fetch(`https://syncnic.nico936d.aspitcloud.dk/api/write/PostSession.php?MovieUrl=${window.location.href}&TimeStamp=0&Paused=1&pauseTime=1&PassCode=${string}`)
         .then((result) =>{return result.text();})
         .then((content) =>{
         })
@@ -64,19 +67,13 @@ chrome.runtime.onMessage.addListener(function (requset, sender, sendResponse){
 const d = new Date();
 setTimeout(function (){
     setInterval(function(){
-        if(localStorage.getItem('IsHost') == "true"){
-            let videoPlayer = document.querySelector('video');
-            if(videoPlayer != null){
-                
-                if(window.location.href.includes("netflix.com")){
-
-                    videoPlayer.addEventListener('seeked', e =>{
-                        UpdatePause(1);
-                        UpdatePauseTime(videoPlayer.currentTime+2);
-                        UpdateTimeStamp(videoPlayer.currentTime);
-                    })
-                }
-            }
+        let videoPlayer = document.querySelector('video');
+            if(window.location.href.includes("netflix.com") && videoPlayer != null && localStorage.getItem('IsHost') == "true"){
+            videoPlayer.addEventListener('seeked', e =>{
+                UpdatePause(1);
+                UpdatePauseTime(videoPlayer.currentTime+Number(pausePlusTime));
+                UpdateTimeStamp(videoPlayer.currentTime);
+            })
         }
 
         if(localStorage.getItem('IsHost') != null && localStorage.getItem('IsHost') != ""){
@@ -173,17 +170,16 @@ function ControlGuestViaplay(){
 function UpdatePause(paused){
     const videoPlayer = document.querySelector('video');
     if(paused == 1 && videoPlayer != null && window.location.href.includes("netflix.com")){
-        UpdateTimeStamp(videoPlayer.currentTime+2);
-        const pauseTime = videoPlayer.currentTime+2;
+        UpdateTimeStamp(videoPlayer.currentTime+pausePlusTime);
+        const pauseTime = videoPlayer.currentTime+pausePlusTime;
         fetch(`https://syncnic.nico936d.aspitcloud.dk/api/update/update.php?passCode=${localStorage.getItem('videoPassCode')}&pauseTime=${pauseTime}`)
         .then((result) =>{return result.text();})
         .then((content) =>{
         })
     }
     
-    const timePlus = 2;
     let d = new Date();
-    d.setSeconds(d.getSeconds() + timePlus); // Adds the extra time before fire
+    d.setSeconds(d.getSeconds() + pausePlusTime); // Adds the extra time before fire
     d.setHours(d.getHours() +2);
 
     let sqlDate = d.toISOString().slice(0, 19).replace('T', ' ');
