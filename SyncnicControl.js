@@ -72,7 +72,7 @@ setTimeout(function (){
 
                     videoPlayer.addEventListener('seeked', e =>{
                         UpdatePause(1);
-                        UpdatePauseTime(videoPlayer.currentTime+0.5);
+                        UpdatePauseTime(videoPlayer.currentTime+2);
                         UpdateTimeStamp(videoPlayer.currentTime);
                     })
                 }
