@@ -173,8 +173,8 @@ function ControlGuestViaplay(){
 function UpdatePause(paused){
     const videoPlayer = document.querySelector('video');
     if(paused == 1 && videoPlayer != null && window.location.href.includes("netflix.com")){
-        UpdateTimeStamp(videoPlayer.currentTime+4);
-        const pauseTime = videoPlayer.currentTime+4;
+        UpdateTimeStamp(videoPlayer.currentTime+2);
+        const pauseTime = videoPlayer.currentTime+2;
         fetch(`https://syncnic.nico936d.aspitcloud.dk/api/update/update.php?passCode=${localStorage.getItem('videoPassCode')}&pauseTime=${pauseTime}`)
         .then((result) =>{return result.text();})
         .then((content) =>{
